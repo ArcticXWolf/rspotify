@@ -61,7 +61,9 @@ module RSpotify
       begin
         response = RestClient.send(verb, url, *params)
       rescue RestClient::Unauthorized => e
+        puts "DEBUG: Unauthorized exception: "+e.inspect
         raise e if request_was_user_authenticated?(*params)
+        puts "DEBUG: Unauthorized: not user authenticated"
         if @client_token
           authenticate(@client_id, @client_secret)
 
@@ -72,6 +74,7 @@ module RSpotify
         end
       end
 
+      puts "DEBUG: response: "+response.inspect
       return response if raw_response
       JSON.parse response unless response.nil? || response.empty?
     end
@@ -85,6 +88,9 @@ module RSpotify
       users_credentials = if User.class_variable_defined?('@@users_credentials')
         User.class_variable_get('@@users_credentials')
       end
+
+      puts "DEBUG: user_creds: "+users_credentials.inspect
+      puts "DEBUG: params: "+params.inspect
 
       obj = params.find{|x| x.is_a?(Hash) && x['Authorization']}
       if users_credentials && !users_credentials.none?{|u| "Bearer #{u}" == obj}
