@@ -93,7 +93,7 @@ module RSpotify
       puts "DEBUG: params: "+params.inspect
 
       obj = params.find{|x| x.is_a?(Hash) && x['Authorization']}
-      if users_credentials && !users_credentials.none?{|u| "Bearer #{u}" == obj}
+      if users_credentials && !users_credentials.none?{|u| "Bearer #{u['token']}" == obj}
         return true
       end
       return false
